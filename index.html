@@ -10,10 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   TOKENS — palette is fixed art direction (night airfield),
-   so it stays constant in light and dark viewers.
-   ============================================================ */
 :root{
   --ink:        #0f2836;
   --ink-deep:   #0a1d28;
@@ -50,9 +46,6 @@ img{ max-width:100%; }
 button{ font:inherit; color:inherit; cursor:pointer; }
 :focus-visible{ outline:2px solid var(--beacon); outline-offset:3px; border-radius:4px; }
 
-/* ============================================================
-   SHELL
-   ============================================================ */
 #shell{
   position:fixed; inset:0;
   display:grid;
@@ -60,13 +53,13 @@ button{ font:inherit; color:inherit; cursor:pointer; }
   user-select:none;
 }
 
-/* ---------- header ---------- */
 header{
   display:flex; align-items:center; gap:14px;
-  padding:14px clamp(14px,4vw,32px) 10px;
+  padding:14px clamp(120px,26vw,180px) 10px clamp(14px,4vw,32px);
   flex-wrap:wrap;
   z-index:3;
 }
+.season-col{ display:flex; flex-direction:column; gap:4px; align-items:flex-start; }
 .season{
   font-family:var(--font-display);
   font-weight:700; font-size:.82rem; letter-spacing:.01em;
@@ -75,6 +68,9 @@ header{
   border-radius:999px;
   padding:4px 12px;
   white-space:nowrap;
+}
+.streak{
+  font-size:.72rem; color:var(--muted); padding-left:2px; white-space:nowrap;
 }
 .gem-readout{
   margin-inline:auto;
@@ -92,8 +88,17 @@ header{
 .gem-label{ font-size:.85rem; color:var(--muted); }
 .rate{ display:block; font-size:.78rem; color:var(--horizon); }
 .who{
-  display:flex; align-items:center; gap:8px;
+  position:fixed;
+  top:14px;
+  right:clamp(14px,4vw,32px);
+  z-index:6;
+  display:flex; flex-direction:column; align-items:flex-end; gap:4px;
   font-size:.85rem; color:var(--muted);
+  background:rgba(10,29,40,.55);
+  border:1px solid var(--edge);
+  border-radius:12px;
+  padding:9px 12px;
+  backdrop-filter:blur(6px);
 }
 .who strong{ color:var(--contrail); font-weight:600; }
 .linkish{
@@ -103,7 +108,6 @@ header{
 }
 .linkish:hover{ color:var(--contrail); }
 
-/* ---------- airspace (the click surface) ---------- */
 #airspace{
   position:relative;
   overflow:hidden;
@@ -135,7 +139,6 @@ header{
 @keyframes pop{ 0%{transform:scale(.4);opacity:0} 60%{transform:scale(1.25)} 100%{transform:scale(1);opacity:1} }
 .plane.is-new svg{ animation:pop .45s cubic-bezier(.2,.9,.3,1.4) both; }
 
-/* hub */
 .hub{
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
   width:min(30vmin,190px); aspect-ratio:1;
@@ -166,7 +169,6 @@ header{
 }
 @keyframes rise{ to{ transform:translate(-50%,-46px); opacity:0; } }
 
-/* ---------- footer controls ---------- */
 footer{
   display:flex; gap:10px; align-items:center; justify-content:center;
   flex-wrap:wrap;
@@ -188,9 +190,6 @@ footer{
 .btn.ghost{ background:none; }
 .btn[disabled]{ opacity:.42; cursor:not-allowed; transform:none; }
 
-/* ============================================================
-   MODALS
-   ============================================================ */
 .scrim{
   position:fixed; inset:0; z-index:20;
   background:rgba(6,17,24,.78);
@@ -223,11 +222,32 @@ input[type=text],input[type=password],input[type=number]{
   color:var(--contrail); font:inherit;
 }
 input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:transparent; }
+textarea{
+  width:100%; padding:11px 13px; margin-bottom:10px;
+  background:rgba(10,29,40,.7);
+  border:1px solid var(--edge); border-radius:9px;
+  color:var(--contrail); font:inherit; resize:vertical;
+}
+textarea:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:transparent; }
+.wallpaper-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:10px;
+  margin-top:6px;
+}
+.wallpaper-swatch{
+  border-radius:10px; border:2px solid var(--edge); padding:8px 6px;
+  text-align:center; font-size:.7rem; color:var(--muted); cursor:pointer;
+}
+.wallpaper-swatch.locked{ opacity:.4; cursor:not-allowed; }
+.wallpaper-swatch.active{ border-color:var(--beacon); color:var(--contrail); }
+.wallpaper-swatch .swatch-preview{ height:36px; border-radius:6px; margin-bottom:6px; }
+.star-row{ display:flex; gap:6px; font-size:2rem; margin:8px 0 6px; }
+.star-row .star{ cursor:pointer; color:var(--edge); }
+.star-row .star.filled{ color:var(--beacon); }
 .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 .row .btn{ flex:1 1 auto; }
 .note{ font-size:.78rem; color:var(--horizon); margin-top:14px; }
 .err{ color:var(--danger); font-size:.86rem; min-height:1.3em; margin:0 0 8px; }
-.tabs{ display:flex; gap:6px; margin-bottom:18px; }
+.tabs{ display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
 .tab{
   flex:1; padding:9px; border-radius:9px; border:1px solid var(--edge);
   background:none; font-family:var(--font-display); font-weight:700; font-size:.9rem;
@@ -235,7 +255,6 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
 }
 .tab[aria-selected=true]{ background:rgba(61,127,149,.35); color:var(--contrail); border-color:var(--horizon); }
 
-/* quiz */
 .sum{
   font-family:var(--font-display); font-weight:800;
   font-size:clamp(2.4rem,9vw,3.6rem); text-align:center;
@@ -244,7 +263,6 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
 }
 .sum input{ width:4.5ch; text-align:center; font:inherit; color:var(--contrail); margin:0 0 0 .3em; }
 
-/* shop */
 .wallet{
   display:flex; justify-content:space-between; align-items:baseline;
   border-bottom:1px solid var(--edge); padding-bottom:12px; margin-bottom:6px;
@@ -265,6 +283,41 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
 }
 .price{ font-variant-numeric:tabular-nums; }
 
+.lb-row{
+  display:grid; grid-template-columns:2.2rem 1fr auto; gap:12px; align-items:center;
+  padding:10px 0; border-bottom:1px solid var(--edge);
+}
+.lb-row:last-of-type{ border-bottom:0; }
+.lb-rank{
+  font-family:var(--font-display); font-weight:800; color:var(--muted);
+  font-size:.95rem; text-align:center;
+}
+.lb-row:nth-of-type(1) .lb-rank{ color:var(--beacon); }
+.lb-namecol{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.lb-name{ font-weight:600; }
+.lb-name .you{
+  margin-left:8px; font-size:.7rem; font-weight:700; color:var(--gem);
+  border:1px solid var(--gem); border-radius:999px; padding:1px 7px;
+}
+.lb-country{ font-size:.76rem; color:var(--muted); }
+.lb-gems{
+  font-family:var(--font-display); font-weight:700; color:var(--gem);
+  font-variant-numeric:tabular-nums;
+}
+.lb-empty{ color:var(--muted); font-size:.88rem; text-align:center; padding:18px 0; }
+.lb-flag{ margin-right:6px; }
+.lb-your-rank{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:rgba(255,176,32,.1);
+  border:1px solid var(--beacon-dim);
+  border-radius:10px;
+  padding:9px 12px;
+  margin:0 0 14px;
+  font-size:.88rem; color:var(--contrail);
+  font-family:var(--font-display); font-weight:700;
+}
+.lb-your-rank:empty{ display:none; }
+
 .toast{
   position:fixed; left:50%; bottom:86px; transform:translateX(-50%);
   background:var(--ink-deep); border:1px solid var(--horizon);
@@ -284,10 +337,23 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
 </style>
 </head>
 <body>
-
+<!-- skyloop-banner -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3286738831360204"
+     data-ad-slot="8646539481"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 <div id="shell" hidden>
   <header>
-    <span class="season" id="seasonChip">Season 1</span>
+    <div class="season-col">
+      <span class="season" id="seasonChip">Season 1</span>
+      <span class="streak" id="streakChip"></span>
+      <span class="streak" id="bestStreakChip"></span>
+    </div>
     <div class="gem-readout">
       <span class="gem-count" id="gemCount">0</span>
       <span class="gem-label">Gems<span class="rate" id="rate">idle</span></span>
@@ -295,6 +361,8 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
     <div class="who">
       <span>Pilot <strong id="whoName">—</strong></span>
       <button class="linkish" id="logoutBtn">Sign out</button>
+      <button class="linkish" id="leaderboardBtn">Leaderboard</button>
+      <button class="linkish" id="settingsBtn">Settings</button>
     </div>
   </header>
 
@@ -314,7 +382,6 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
   </footer>
 </div>
 
-<!-- ---------------- AUTH ---------------- -->
 <div class="scrim" id="authModal">
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <h2 id="authTitle">Skyloop</h2>
@@ -327,6 +394,10 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
     <input id="authUser" type="text" autocomplete="username" maxlength="20" spellcheck="false">
     <label for="authPass">Password</label>
     <input id="authPass" type="password" autocomplete="current-password" maxlength="64">
+    <div id="authCountryRow" hidden>
+      <label for="authCountry">Country</label>
+      <select id="authCountry"></select>
+    </div>
     <p class="err" id="authErr"></p>
     <div class="row">
       <button class="btn primary" id="authGo">Sign in</button>
@@ -335,7 +406,6 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
   </div>
 </div>
 
-<!-- ---------------- QUIZ ---------------- -->
 <div class="scrim" id="quizModal" hidden>
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
     <h2 id="quizTitle">Clearance check</h2>
@@ -350,7 +420,6 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
   </div>
 </div>
 
-<!-- ---------------- SHOP ---------------- -->
 <div class="scrim" id="shopModal" hidden>
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
     <h2 id="shopTitle">Quartermaster</h2>
@@ -363,7 +432,122 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
   </div>
 </div>
 
-<!-- ---------------- HELP ---------------- -->
+<div class="scrim" id="leaderboardModal" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="lbTitle">
+    <h2 id="lbTitle">Leaderboard</h2>
+    <div class="row" style="align-items:center; margin-bottom:14px;">
+      <span style="font-size:.84rem; color:var(--muted);">Your country</span>
+      <select id="lbCountrySelect" style="flex:1 1 160px; margin:0;"></select>
+      <button class="btn ghost" id="lbCountrySave" style="flex:0 0 auto;">Save</button>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="lbTabGlobal" role="tab" aria-selected="true">Global</button>
+      <button class="tab" id="lbTabCountry" role="tab" aria-selected="false">My country</button>
+    </div>
+    <p class="lede" id="lbNote"></p>
+    <p class="lb-your-rank" id="lbYourRank"></p>
+    <div id="lbList"></div>
+    <div class="row" style="margin-top:18px">
+      <button class="btn primary" id="lbClose">Back to the loop</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="confirmModal" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle">Are you sure?</h2>
+    <p class="lede" id="confirmMsg"></p>
+    <div class="row">
+      <button class="btn ghost" id="confirmNo">No</button>
+      <button class="btn primary" id="confirmYes">Yes</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="congratsModal" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="congratsTitle">
+    <h2 id="congratsTitle">🎉 Congrats!</h2>
+    <p class="lede" id="congratsMsg"></p>
+    <div class="row">
+      <button class="btn primary" id="congratsClose">Nice!</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="settingsModal" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <h2 id="settingsTitle">Settings</h2>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="setTabGeneral" role="tab" aria-selected="true">General</button>
+      <button class="tab" id="setTabFruits" role="tab" aria-selected="false">Fruits</button>
+      <button class="tab" id="setTabQuests" role="tab" aria-selected="false">Quests</button>
+      <button class="tab" id="setTabSound" role="tab" aria-selected="false">Sound</button>
+      <button class="tab" id="setTabFeedback" role="tab" aria-selected="false">Feedback</button>
+      <button class="tab" id="setTabRating" role="tab" aria-selected="false">Rating</button>
+    </div>
+
+    <div id="setPaneGeneral">
+      <p class="lede">Pick a wallpaper. Locked ones unlock when you buy that season in the shop.</p>
+      <div id="wallpaperGrid" class="wallpaper-grid"></div>
+
+      <p class="lede" style="margin-top:22px;">Careful — these can't be undone.</p>
+      <div class="row" style="flex-direction:column; align-items:stretch; gap:8px;">
+        <button class="btn ghost" id="resetPlanesBtn">💀 Reset Planes</button>
+        <button class="btn ghost" id="resetGemsBtn">💀 Reset Gems</button>
+        <button class="btn ghost" id="resetAllBtn">☠️ Reset All Progress</button>
+      </div>
+    </div>
+
+    <div id="setPaneFruits" hidden>
+      <p class="lede">Merge past the planes to discover these. Keep merging matching ranks to work your way up.</p>
+      <div id="fruitsList"></div>
+    </div>
+
+    <div id="setPaneQuests" hidden>
+      <p class="lede">One-time goals based on your total gems earned. Claim each once you hit the target.</p>
+      <div id="questsList"></div>
+    </div>
+
+    <div id="setPaneSound" hidden>
+      <p class="lede">A calm ambient loop while you play, and a light buzz when planes merge.</p>
+      <div class="row" style="justify-content:space-between;">
+        <span>Ambient music</span>
+        <button class="btn ghost" id="toggleMusic">Off</button>
+      </div>
+      <div class="row" style="justify-content:space-between; margin-top:10px; align-items:center;">
+        <span>Sound</span>
+        <select id="trackSelect" style="flex:1 1 160px; margin:0;"></select>
+      </div>
+      <div class="row" style="justify-content:space-between; margin-top:10px;">
+        <span>Merge vibration</span>
+        <button class="btn ghost" id="toggleVibrate">On</button>
+      </div>
+      <div class="row" style="justify-content:space-between; margin-top:10px; align-items:center;">
+        <span>Volume</span>
+        <input type="range" id="volumeSlider" min="0" max="100" value="60" style="flex:1 1 140px;">
+        <button class="btn ghost" id="muteBtn" style="flex:0 0 auto;">Mute</button>
+      </div>
+    </div>
+
+    <div id="setPaneFeedback" hidden>
+      <p class="lede">Tell me what's broken, confusing, or missing — I read every message.</p>
+      <textarea id="feedbackText" rows="4" placeholder="Type your feedback here…"></textarea>
+      <button class="btn primary" id="feedbackSend">Send feedback</button>
+      <p class="note" id="feedbackNote"></p>
+    </div>
+
+    <div id="setPaneRating" hidden>
+      <p class="lede">Enjoying Skyloop? Give it a star rating.</p>
+      <div id="starRow" class="star-row"></div>
+      <p class="note" id="ratingNote"></p>
+    </div>
+
+    <div class="row" style="margin-top:20px">
+      <button class="btn primary" id="settingsClose">Back to the loop</button>
+    </div>
+  </div>
+</div>
+
 <div class="scrim" id="helpModal" hidden>
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
     <h2 id="helpTitle">How to play</h2>
@@ -380,20 +564,13 @@ input:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color:tr
 
 <script>
 "use strict";
-/* ==================================================================
-   1. SEASON + BALANCE CONFIG
-   Everything tunable lives in this block. Change numbers here to
-   rebalance; add objects to PLANE_TIERS / SHOP_ITEMS to extend.
-   ================================================================== */
-
 const GAME_SEASON = {
   id: "S1",
   name: "Season 1 — Monsoon Skies",
   tagline: "Monsoon winds are up, so contrail kits are cheap this season.",
-  // Seasonal multipliers applied globally. Retune per season.
-  clickBonus: 1,      // gems per tap  = BALANCE.gemsPerClick * clickBonus
-  incomeBonus: 1,     // fleet income  = base * incomeBonus
-  shopDiscount: 1     // every price   = base * shopDiscount
+  clickBonus: 1,
+  incomeBonus: 1,
+  shopDiscount: 1
 };
 
 const BALANCE = {
@@ -401,23 +578,22 @@ const BALANCE = {
   startingGems: 0,
   startingSlots: 6,
   maxSlots: 12,
-  planeBaseCost: 25,      // cost of plane #1
-  planeCostGrowth: 1.55,  // multiplied per plane already owned
+  planeBaseCost: 25,
+  planeCostGrowth: 1.55,
   speedBaseCost: 120,
   speedCostGrowth: 1.85,
-  speedStepPct: 0.18,     // each speed level: +18% income and orbit speed
+  speedStepPct: 0.18,
   boostBaseCost: 400,
   boostCostGrowth: 2.2,
   boostStepPct: 0.25,
   boostMaxLevel: 5,
   slotCostBase: 600,
   slotCostGrowth: 2.4,
-  tickMs: 1000,           // income tick
+  tickMs: 1000,
   autosaveMs: 4000,
-  baseOrbitSeconds: 26    // seconds for one lap at speed level 0
+  baseOrbitSeconds: 26
 };
 
-// Rank 0 upward. Add entries to extend the merge chain.
 const PLANE_TIERS = [
   { name: "Paper Dart",    income: 1,    color: "#cfe3e8", scale: 0.74 },
   { name: "Crop Duster",   income: 3,    color: "#9fd6c2", scale: 0.80 },
@@ -426,11 +602,113 @@ const PLANE_TIERS = [
   { name: "Regional Jet",  income: 72,   color: "#8aa6ff", scale: 0.98 },
   { name: "Widebody",      income: 200,  color: "#c69bff", scale: 1.05 },
   { name: "Supersonic",    income: 560,  color: "#ffb020", scale: 1.12 },
-  { name: "Monsoon Queen", income: 1600, color: "#ff8f6b", scale: 1.22 }
+  { name: "Monsoon Queen", income: 1600, color: "#ff8f6b", scale: 1.22 },
+  // Fruit tiers: the merge chain keeps going past planes for late-game players.
+  { name: "Comet Cherry",     income: 5000,          color: "#ff4d6d", scale: 1.28, kind: "fruit" },
+  { name: "Golden Apple",     income: 20000,         color: "#ffd23f", scale: 1.32, kind: "fruit" },
+  { name: "Blue Dragonfruit", income: 90000,         color: "#4fa8ff", scale: 1.36, kind: "fruit" },
+  { name: "Solar Mango",      income: 400000,        color: "#ff9f1c", scale: 1.40, kind: "fruit" },
+  { name: "Crimson Berry",    income: 1800000,       color: "#e63950", scale: 1.44, kind: "fruit" },
+  { name: "Frost Melon",      income: 8000000,       color: "#8de3d8", scale: 1.48, kind: "fruit" },
+  { name: "Neon Kiwi",        income: 35000000,      color: "#9ef01a", scale: 1.52, kind: "fruit" },
+  { name: "Phantom Pineapple",income: 150000000,     color: "#c77dff", scale: 1.56, kind: "fruit" },
+  { name: "Starfruit Prime",  income: 650000000,     color: "#ffe066", scale: 1.60, kind: "fruit" },
+  { name: "Infinity Fig",     income: 1000000000000, color: "#ffffff", scale: 1.70, kind: "fruit" }
 ];
 
+// Ten purchasable cosmetic wallpapers. Season 1 is the default look everyone
+// starts with (free, always unlocked); Seasons 2–10 are bought in the shop
+// and equipped from Settings → General.
+const SEASON_THEMES = [
+  { id: 1,  name: "Season 1 — Monsoon Skies",  price: 0,    bg: "radial-gradient(120% 80% at 50% 8%, #1a4055 0%, #0f2836 42%, #0a1d28 100%)" },
+  { id: 2,  name: "Season 2 — Solar Flare",    price: 600,  bg: "radial-gradient(120% 80% at 50% 8%, #6b2d12 0%, #3a1608 42%, #1c0a04 100%)" },
+  { id: 3,  name: "Season 3 — Aurora Run",     price: 900,  bg: "radial-gradient(120% 80% at 50% 8%, #164a3f 0%, #0c2a24 42%, #061815 100%)" },
+  { id: 4,  name: "Season 4 — Deep Space",     price: 1300, bg: "radial-gradient(120% 80% at 50% 8%, #241a4a 0%, #140f2c 42%, #0a0718 100%)" },
+  { id: 5,  name: "Season 5 — Coral Dusk",     price: 1800, bg: "radial-gradient(120% 80% at 50% 8%, #7a2f4a 0%, #401829 42%, #1f0c14 100%)" },
+  { id: 6,  name: "Season 6 — Arctic Drift",   price: 2400, bg: "radial-gradient(120% 80% at 50% 8%, #1c4a5e 0%, #0f2733 42%, #08151c 100%)" },
+  { id: 7,  name: "Season 7 — Golden Hour",    price: 3100, bg: "radial-gradient(120% 80% at 50% 8%, #7a5a12 0%, #402e08 42%, #1f1604 100%)" },
+  { id: 8,  name: "Season 8 — Neon Circuit",   price: 4000, bg: "radial-gradient(120% 80% at 50% 8%, #1a2d5e 0%, #0d1733 42%, #06091c 100%)" },
+  { id: 9,  name: "Season 9 — Volcanic Ash",   price: 5200, bg: "radial-gradient(120% 80% at 50% 8%, #4a1c1c 0%, #290e0e 42%, #140707 100%)" },
+  { id: 10, name: "Season 10 — Nebula Veil",   price: 6800, bg: "radial-gradient(120% 80% at 50% 8%, #3a1a5e 0%, #1f0d33 42%, #10061c 100%)" }
+];
+
+function applyWallpaper(id){
+  const season = SEASON_THEMES.find(s => s.id === id) || SEASON_THEMES[0];
+  document.body.style.background = season.bg;
+}
+
+const COUNTRIES = [
+  "Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Australia","Austria",
+  "Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin",
+  "Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso",
+  "Burundi","Cambodia","Cameroon","Canada","Cape Verde","Central African Republic","Chad","Chile",
+  "China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czechia","Denmark",
+  "Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Estonia","Eswatini",
+  "Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece",
+  "Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland",
+  "India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Ivory Coast","Jamaica","Japan",
+  "Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho",
+  "Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia",
+  "Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia",
+  "Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands",
+  "New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman",
+  "Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines",
+  "Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Lucia","Samoa","San Marino",
+  "Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia",
+  "Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka",
+  "Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand",
+  "Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu",
+  "Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan",
+  "Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe","Other"
+];
+
+// ISO 3166-1 alpha-2 codes, keyed by the display names in COUNTRIES above.
+// "Other" and "Unknown" (pre-existing pilots with no country on file) have no
+// code, so flagEmoji() falls back to a plain globe for those.
+const COUNTRY_CODES = {
+  "Afghanistan":"AF","Albania":"AL","Algeria":"DZ","Andorra":"AD","Angola":"AO","Argentina":"AR",
+  "Armenia":"AM","Australia":"AU","Austria":"AT","Azerbaijan":"AZ","Bahamas":"BS","Bahrain":"BH",
+  "Bangladesh":"BD","Barbados":"BB","Belarus":"BY","Belgium":"BE","Belize":"BZ","Benin":"BJ",
+  "Bhutan":"BT","Bolivia":"BO","Bosnia and Herzegovina":"BA","Botswana":"BW","Brazil":"BR",
+  "Brunei":"BN","Bulgaria":"BG","Burkina Faso":"BF","Burundi":"BI","Cambodia":"KH","Cameroon":"CM",
+  "Canada":"CA","Cape Verde":"CV","Central African Republic":"CF","Chad":"TD","Chile":"CL",
+  "China":"CN","Colombia":"CO","Comoros":"KM","Congo":"CG","Costa Rica":"CR","Croatia":"HR",
+  "Cuba":"CU","Cyprus":"CY","Czechia":"CZ","Denmark":"DK","Djibouti":"DJ","Dominica":"DM",
+  "Dominican Republic":"DO","Ecuador":"EC","Egypt":"EG","El Salvador":"SV","Estonia":"EE",
+  "Eswatini":"SZ","Ethiopia":"ET","Fiji":"FJ","Finland":"FI","France":"FR","Gabon":"GA",
+  "Gambia":"GM","Georgia":"GE","Germany":"DE","Ghana":"GH","Greece":"GR","Grenada":"GD",
+  "Guatemala":"GT","Guinea":"GN","Guinea-Bissau":"GW","Guyana":"GY","Haiti":"HT","Honduras":"HN",
+  "Hungary":"HU","Iceland":"IS","India":"IN","Indonesia":"ID","Iran":"IR","Iraq":"IQ",
+  "Ireland":"IE","Israel":"IL","Italy":"IT","Ivory Coast":"CI","Jamaica":"JM","Japan":"JP",
+  "Jordan":"JO","Kazakhstan":"KZ","Kenya":"KE","Kiribati":"KI","Kuwait":"KW","Kyrgyzstan":"KG",
+  "Laos":"LA","Latvia":"LV","Lebanon":"LB","Lesotho":"LS","Liberia":"LR","Libya":"LY",
+  "Liechtenstein":"LI","Lithuania":"LT","Luxembourg":"LU","Madagascar":"MG","Malawi":"MW",
+  "Malaysia":"MY","Maldives":"MV","Mali":"ML","Malta":"MT","Mauritania":"MR","Mauritius":"MU",
+  "Mexico":"MX","Moldova":"MD","Monaco":"MC","Mongolia":"MN","Montenegro":"ME","Morocco":"MA",
+  "Mozambique":"MZ","Myanmar":"MM","Namibia":"NA","Nauru":"NR","Nepal":"NP","Netherlands":"NL",
+  "New Zealand":"NZ","Nicaragua":"NI","Niger":"NE","Nigeria":"NG","North Korea":"KP",
+  "North Macedonia":"MK","Norway":"NO","Oman":"OM","Pakistan":"PK","Palau":"PW",
+  "Palestine":"PS","Panama":"PA","Papua New Guinea":"PG","Paraguay":"PY","Peru":"PE",
+  "Philippines":"PH","Poland":"PL","Portugal":"PT","Qatar":"QA","Romania":"RO","Russia":"RU",
+  "Rwanda":"RW","Saint Lucia":"LC","Samoa":"WS","San Marino":"SM","Saudi Arabia":"SA",
+  "Senegal":"SN","Serbia":"RS","Seychelles":"SC","Sierra Leone":"SL","Singapore":"SG",
+  "Slovakia":"SK","Slovenia":"SI","Solomon Islands":"SB","Somalia":"SO","South Africa":"ZA",
+  "South Korea":"KR","South Sudan":"SS","Spain":"ES","Sri Lanka":"LK","Sudan":"SD",
+  "Suriname":"SR","Sweden":"SE","Switzerland":"CH","Syria":"SY","Taiwan":"TW","Tajikistan":"TJ",
+  "Tanzania":"TZ","Thailand":"TH","Timor-Leste":"TL","Togo":"TG","Tonga":"TO",
+  "Trinidad and Tobago":"TT","Tunisia":"TN","Turkey":"TR","Turkmenistan":"TM","Tuvalu":"TV",
+  "Uganda":"UG","Ukraine":"UA","United Arab Emirates":"AE","United Kingdom":"GB",
+  "United States":"US","Uruguay":"UY","Uzbekistan":"UZ","Vanuatu":"VU","Vatican City":"VA",
+  "Venezuela":"VE","Vietnam":"VN","Yemen":"YE","Zambia":"ZM","Zimbabwe":"ZW"
+};
+
+function flagEmoji(countryName){
+  const code = COUNTRY_CODES[countryName];
+  if (!code) return "🌐";
+  return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+}
+
 const MATH_QUIZ = {
-  // Pools the gate draws from. Add or remove freely.
   makers: [
     () => { const a = rnd(2, 19), b = rnd(2, 19); return { q: a + " + " + b, a: a + b }; },
     () => { const a = rnd(2, 12), b = rnd(2, 9);  return { q: a + " × " + b, a: a * b }; },
@@ -438,8 +716,6 @@ const MATH_QUIZ = {
   ]
 };
 
-/* Shop catalogue. Each item is self-contained: price, availability,
-   and what buying it does. Add seasonal items with seasonal:true. */
 const SHOP_ITEMS = [
   {
     id: "plane",
@@ -479,9 +755,6 @@ const SHOP_ITEMS = [
   }
 ];
 
-/* ==================================================================
-   2. STORAGE  (localStorage, namespaced and versioned)
-   ================================================================== */
 const STORE = {
   users:   "skyloop/v1/users",
   session: "skyloop/v1/session",
@@ -498,22 +771,507 @@ function write(key, value){
 }
 function drop(key){ try { localStorage.removeItem(key); } catch(e){} }
 
-// Obfuscation only — deliberately not a security boundary. See the note
-// in the sign-in panel. Swap for a real backend before shipping anywhere.
 function scramble(str){
   let h = 2166136261;
   for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
   return (h >>> 0).toString(36);
 }
 
-/* ==================================================================
-   3. STATE
-   ================================================================== */
+/* ------------------------------------------------------------------
+   GLOBAL LEADERBOARD (shared database)
+   Only reachable when this page is opened through its Claude artifact
+   link, where window.claude exists. Pasted onto an outside website,
+   window.claude is undefined, dbCap stays null, and the leaderboard UI
+   quietly falls back to a per-browser view built from localStorage.
+   ------------------------------------------------------------------ */
+let dbCap = null;
+let dbSyncing = false;
+let lastSyncedGems = -1;
+
+async function initDb(){
+  try {
+    if (window.claude && typeof window.claude.use === "function"){
+      dbCap = await window.claude.use("db");
+    }
+  } catch (e){ dbCap = null; }
+}
+
+function currentCountry(){
+  const users = read(STORE.users, {});
+  return (users[user] && users[user].country) || "Unknown";
+}
+
+async function syncLeaderboard(force){
+  if (!dbCap || !user || !state) return;
+  const gems = Math.floor(state.gems);
+  if (!force && gems === lastSyncedGems) return;
+  if (dbSyncing) return;
+  dbSyncing = true;
+  try {
+    const users = read(STORE.users, {});
+    await dbCap.doc("leaderboard/" + user).set({
+      name: (users[user] && users[user].name) || user,
+      country: (users[user] && users[user].country) || "Unknown",
+      gems: gems,
+      updatedAt: Date.now()
+    });
+    lastSyncedGems = gems;
+  } catch (e){ /* transient — the next autosave tick will retry */ }
+  dbSyncing = false;
+}
+
+async function fetchGlobalFull(){
+  const snap = await dbCap.collection("leaderboard").orderBy("gems", "desc").limit(1000).get();
+  return snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+}
+
+async function fetchCountryFull(country){
+  const snap = await dbCap.collection("leaderboard")
+    .where("country", "==", country).orderBy("gems", "desc").limit(1000).get();
+  return snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+}
+
+function localBoardRows(){
+  const users = read(STORE.users, {});
+  return Object.keys(users).map(key => {
+    const save = read(STORE.save(key), null);
+    return {
+      id: key,
+      name: users[key].name,
+      country: users[key].country || "Unknown",
+      gems: save ? save.gems : 0
+    };
+  }).sort((a, b) => b.gems - a.gems);
+}
+
+let confirmResolver = null;
+
+function askConfirm(title, message){
+  return new Promise(resolve => {
+    $("confirmTitle").textContent = title;
+    $("confirmMsg").textContent = message;
+    confirmResolver = resolve;
+    openModal($("confirmModal"));
+  });
+}
+
+function settleConfirm(result){
+  closeModal($("confirmModal"));
+  if (confirmResolver){ const r = confirmResolver; confirmResolver = null; r(result); }
+}
+
+async function resetProgress(){
+  closeModal($("settingsModal"));
+  const sure = await askConfirm(
+    "Reset all your progress?",
+    "Your gems, planes, and upgrades will all be wiped and you'll start again from zero. This can't be undone."
+  );
+  if (!sure) return;
+
+  state = freshState();
+  picked = null;
+  saveState();
+  renderFleet();
+  paintHud();
+  lastSyncedGems = -1;
+  await syncLeaderboard(true);
+  renderLeaderboard();
+  toast("Your progress has been reset.");
+}
+
+async function resetPlanesOnly(){
+  closeModal($("settingsModal"));
+  const sure = await askConfirm(
+    "Reset your planes?",
+    "Every plane on your loop will be scrapped. Your gems and upgrades stay untouched. This can't be undone."
+  );
+  if (!sure) return;
+
+  state.planes = [];
+  state.nextPlaneId = 1;
+  picked = null;
+  saveState();
+  renderFleet();
+  paintHud();
+  toast("Your fleet has been cleared.");
+}
+
+async function resetGemsOnly(){
+  closeModal($("settingsModal"));
+  const sure = await askConfirm(
+    "Reset your gems?",
+    "Your gem balance will drop to zero. Your planes, upgrades, and unlocked seasons stay untouched. This can't be undone."
+  );
+  if (!sure) return;
+
+  state.gems = 0;
+  saveState();
+  paintHud();
+  lastSyncedGems = -1;
+  await syncLeaderboard(true);
+  toast("Your gems have been reset to zero.");
+}
+
+/* ------------------------------------------------------------------
+   AMBIENT MUSIC — a small original generative pad (four sine tones with
+   slow, staggered volume drift), not a recording of any real track.
+   Starting audio needs a user gesture, so this only ever runs from a
+   click handler (sign-in, or flipping the Sound toggle).
+   ------------------------------------------------------------------ */
+let audioCtx = null;
+let musicNodes = [];
+let musicMaster = null;
+let noiseBuffer = null;
+let ambientTimer = null;
+
+const SOUND_TRACKS = [
+  { id: "ocean",  name: "Ocean Waves" },
+  { id: "forest", name: "Forest Birds" },
+  { id: "pad",    name: "Calm Pad" }
+];
+
+function currentVolume(){
+  if (!state || !state.settings) return 0.6;
+  return state.settings.muted ? 0 : state.settings.volume;
+}
+
+function getNoiseBuffer(){
+  if (noiseBuffer) return noiseBuffer;
+  const len = audioCtx.sampleRate * 2;
+  noiseBuffer = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const data = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  return noiseBuffer;
+}
+
+function startMusic(){
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  } catch (e){ return; }
+
+  stopMusic();
+  const master = audioCtx.createGain();
+  master.gain.value = 0.6 * currentVolume();
+  master.connect(audioCtx.destination);
+  musicMaster = master;
+  musicNodes.push(master);
+
+  const track = (state && state.settings && state.settings.track) || "ocean";
+  if (track === "ocean") buildOceanTrack(master);
+  else if (track === "forest") buildForestTrack(master);
+  else buildPadTrack(master);
+}
+
+function buildPadTrack(master){
+  const freqs = [130.81, 164.81, 196.00, 246.94]; // a calm, consonant chord
+  freqs.forEach((f, i) => {
+    const osc = audioCtx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = f;
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.18;
+    osc.connect(gain); gain.connect(master);
+
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 0.04 + i * 0.015; // slow "breathing" drift, staggered per voice
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 0.05;
+    lfo.connect(lfoGain);
+    lfoGain.connect(gain.gain);
+
+    osc.start(); lfo.start();
+    musicNodes.push(osc, lfo, gain, lfoGain);
+  });
+}
+
+function buildOceanTrack(master){
+  // Body — slow, low-filtered noise for the rolling swell underneath
+  const body = audioCtx.createBufferSource();
+  body.buffer = getNoiseBuffer();
+  body.loop = true;
+  const bodyFilter = audioCtx.createBiquadFilter();
+  bodyFilter.type = "lowpass";
+  bodyFilter.frequency.value = 420;
+  bodyFilter.Q.value = 0.5;
+  const bodyGain = audioCtx.createGain();
+  bodyGain.gain.value = 0.34;
+  body.connect(bodyFilter); bodyFilter.connect(bodyGain); bodyGain.connect(master);
+
+  // Sparkle — a brighter, bandpassed noise layer for the fizzing foam on top
+  const sparkle = audioCtx.createBufferSource();
+  sparkle.buffer = getNoiseBuffer();
+  sparkle.loop = true;
+  const sparkleFilter = audioCtx.createBiquadFilter();
+  sparkleFilter.type = "bandpass";
+  sparkleFilter.frequency.value = 2400;
+  sparkleFilter.Q.value = 0.7;
+  const sparkleGain = audioCtx.createGain();
+  sparkleGain.gain.value = 0.09;
+  sparkle.connect(sparkleFilter); sparkleFilter.connect(sparkleGain); sparkleGain.connect(master);
+
+  // One swell LFO drives both layers together so the foam rises and falls with the wave
+  const swellLfo = audioCtx.createOscillator();
+  swellLfo.frequency.value = 0.11; // roughly a 9-second wave cycle
+  const swellToBody = audioCtx.createGain();
+  swellToBody.gain.value = 0.24;
+  swellLfo.connect(swellToBody); swellToBody.connect(bodyGain.gain);
+  const swellToSparkle = audioCtx.createGain();
+  swellToSparkle.gain.value = 0.07;
+  swellLfo.connect(swellToSparkle); swellToSparkle.connect(sparkleGain.gain);
+
+  // Slow filter drift on the body for a shifting "shhh" texture
+  const filterLfo = audioCtx.createOscillator();
+  filterLfo.frequency.value = 0.045;
+  const filterLfoGain = audioCtx.createGain();
+  filterLfoGain.gain.value = 180;
+  filterLfo.connect(filterLfoGain); filterLfoGain.connect(bodyFilter.frequency);
+
+  body.start(); sparkle.start(); swellLfo.start(); filterLfo.start();
+  musicNodes.push(
+    body, bodyFilter, bodyGain, sparkle, sparkleFilter, sparkleGain,
+    swellLfo, swellToBody, swellToSparkle, filterLfo, filterLfoGain
+  );
+
+  scheduleAmbientEvent("ocean", master);
+}
+
+function playSplash(master){
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const src = audioCtx.createBufferSource();
+  src.buffer = getNoiseBuffer();
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.value = 900 + Math.random() * 1800;
+  filter.Q.value = 1.1;
+
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.exponentialRampToValueAtTime(0.16 + Math.random() * 0.08, now + 0.04);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + 0.5 + Math.random() * 0.4);
+
+  src.connect(filter); filter.connect(g); g.connect(master);
+  src.start(now);
+  src.stop(now + 1.1);
+}
+
+function buildForestTrack(master){
+  const src = audioCtx.createBufferSource();
+  src.buffer = getNoiseBuffer();
+  src.loop = true;
+
+  const airFilter = audioCtx.createBiquadFilter();
+  airFilter.type = "highpass";
+  airFilter.frequency.value = 2200;
+
+  const airGain = audioCtx.createGain();
+  airGain.gain.value = 0.05;
+
+  src.connect(airFilter); airFilter.connect(airGain); airGain.connect(master);
+  src.start();
+  musicNodes.push(src, airFilter, airGain);
+
+  scheduleAmbientEvent("forest", master);
+}
+
+function scheduleAmbientEvent(track, master){
+  if (!state || !state.settings || !state.settings.music || state.settings.track !== track) return;
+  const delay = track === "ocean"
+    ? 2800 + Math.random() * 4500   // an occasional splash
+    : 900 + Math.random() * 2400;   // more frequent bird chirps
+  ambientTimer = setTimeout(() => {
+    if (track === "ocean") playSplash(master); else playChirp(master);
+    scheduleAmbientEvent(track, master);
+  }, delay);
+}
+
+function playChirp(master){
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  const base = 1800 + Math.random() * 1400;
+
+  const osc = audioCtx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(base, now);
+  osc.frequency.exponentialRampToValueAtTime(base * (1.3 + Math.random() * 0.5), now + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(base * 0.9, now + 0.16);
+
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.exponentialRampToValueAtTime(0.22, now + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+  osc.connect(g); g.connect(master);
+  osc.start(now);
+  osc.stop(now + 0.26);
+}
+
+function applyMusicVolume(){
+  if (musicMaster) musicMaster.gain.value = 0.6 * currentVolume();
+}
+
+function stopMusic(){
+  if (ambientTimer){ clearTimeout(ambientTimer); ambientTimer = null; }
+  musicNodes.forEach(n => {
+    try { n.stop && n.stop(); } catch (e){}
+    try { n.disconnect && n.disconnect(); } catch (e){}
+  });
+  musicNodes = [];
+  musicMaster = null;
+}
+
+function vibrateOnMerge(){
+  if (state && state.settings && state.settings.vibrate && navigator.vibrate){
+    try { navigator.vibrate(70); } catch (e){}
+  }
+}
+
+const MILESTONE_GEMS = 1000000000; // 1,000,000,000 gems
+
+function checkMilestones(){
+  if (!state || state.milestone1B || state.gems < MILESTONE_GEMS) return;
+  state.milestone1B = true;
+  state.unlockedSeasons = SEASON_THEMES.map(s => s.id);
+  const firstFruitIndex = PLANE_TIERS.findIndex(t => t.kind === "fruit");
+  if (firstFruitIndex !== -1 && state.planes.length < state.slots){
+    addPlane(state, firstFruitIndex);
+    renderFleet();
+  }
+  saveState();
+  toast("1,000,000,000 gems! Every season and wallpaper is unlocked, plus a bonus " + PLANE_TIERS[firstFruitIndex].name + ".");
+}
+
+// Grants the one-time fruit-discovery bonus and marks the fruit as seen.
+// Works on whatever state object is passed in (the live game state, or a
+// save being migrated on load) and returns the gem reward granted, if any,
+// so callers can decide whether to show a toast for it.
+function noteFruitDiscovered(s, tierIndex){
+  const tier = PLANE_TIERS[tierIndex];
+  if (!tier || tier.kind !== "fruit") return 0;
+  if (s.fruitsSeen.includes(tierIndex)) return 0;
+  s.fruitsSeen.push(tierIndex);
+  const fruitStart = PLANE_TIERS.findIndex(t => t.kind === "fruit");
+  const fruitIdx = tierIndex - fruitStart;
+  const reward = 10000000 + fruitIdx * 10000000; // 10M, 20M, 30M, ... up the fruit order
+  s.gems += reward;
+  if (s.gems > s.lifetimeGems) s.lifetimeGems = s.gems;
+  return reward;
+}
+
+function ordinal(n){
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function claimQuest(i){
+  const q = QUESTS[i];
+  if (!q || state.questsClaimed.includes(i) || state.lifetimeGems < q.gems) return;
+  state.questsClaimed.push(i);
+  state.gems += q.reward;
+  if (state.gems > state.lifetimeGems) state.lifetimeGems = state.gems;
+  saveState();
+  paintHud();
+  renderQuests();
+
+  const count = state.questsClaimed.length;
+  $("congratsMsg").textContent = "You have completed your " + ordinal(count) + " quest! +" + money(q.reward) + " gems.";
+  openModal($("congratsModal"));
+}
+
+async function sendFeedback(){
+  const box = $("feedbackText");
+  const note = $("feedbackNote");
+  const msg = box.value.trim();
+  if (!msg){ note.textContent = "Type something first."; return; }
+  if (!dbCap){
+    note.textContent = "Feedback failed to send. Please try again.";
+    return;
+  }
+  try {
+    const users = read(STORE.users, {});
+    await dbCap.doc("feedback/" + user + "-" + Date.now()).set({
+      pilot: (users[user] && users[user].name) || user,
+      message: msg,
+      ts: Date.now()
+    });
+    box.value = "";
+    note.textContent = "Feedback sent successfully! Thank you.";
+  } catch (e){
+    note.textContent = "Feedback failed to send. Please try again.";
+  }
+}
+
+let myStars = 0;
+
+function renderStars(selected){
+  myStars = selected;
+  const row = $("starRow");
+  row.innerHTML = "";
+  for (let i = 1; i <= 5; i++){
+    const s = document.createElement("span");
+    s.className = "star" + (i <= selected ? " filled" : "");
+    s.textContent = "★";
+    s.addEventListener("click", () => submitRating(i));
+    row.appendChild(s);
+  }
+}
+
+async function loadRatingPane(){
+  const note = $("ratingNote");
+  note.textContent = "";
+  if (!dbCap){
+    renderStars(0);
+    note.textContent = "Ratings only save when this page is opened via its Claude link.";
+    return;
+  }
+  try {
+    const snap = await dbCap.doc("ratings/" + user).get();
+    renderStars(snap && snap.exists ? (snap.data().stars || 0) : 0);
+  } catch (e){ renderStars(0); }
+  refreshRatingAverage();
+}
+
+async function submitRating(stars){
+  renderStars(stars);
+  const note = $("ratingNote");
+  if (!dbCap){
+    note.textContent = "Ratings only save when this page is opened via its Claude link.";
+    return;
+  }
+  try {
+    const users = read(STORE.users, {});
+    await dbCap.doc("ratings/" + user).set({
+      stars: stars,
+      pilot: (users[user] && users[user].name) || user,
+      ts: Date.now()
+    });
+    note.textContent = "Thanks for rating!";
+    refreshRatingAverage();
+  } catch (e){
+    note.textContent = "Could not save your rating right now.";
+  }
+}
+
+async function refreshRatingAverage(){
+  if (!dbCap) return;
+  try {
+    const snap = await dbCap.collection("ratings").limit(1000).get();
+    const vals = snap.docs.map(d => d.data().stars).filter(v => typeof v === "number");
+    if (vals.length === 0) return;
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const note = $("ratingNote");
+    note.textContent = "Average: " + avg.toFixed(1) + "★ from " + vals.length + " " + (vals.length === 1 ? "pilot" : "pilots") + ". Thanks for rating!";
+  } catch (e){}
+}
+
 let state = null;
 let user = null;
-let picked = null;      // id of the currently selected plane
+let picked = null;
 let lastFrame = 0;
-let orbitPhase = 0;     // radians, advanced every frame
+let orbitPhase = 0;
 
 function freshState(){
   return {
@@ -526,6 +1284,16 @@ function freshState(){
     boostLevel: 0,
     taps: 0,
     merges: 0,
+    unlockedSeasons: [1],
+    activeWallpaper: 1,
+    milestone1B: false,
+    lifetimeGems: 0,
+    fruitsSeen: [],
+    questsClaimed: [],
+    streak: 0,
+    lastPlayedDate: null,
+    bestStreak: 0,
+    settings: { music: true, vibrate: true, volume: 0.6, muted: false, track: "ocean" },
     createdAt: Date.now()
   };
 }
@@ -534,11 +1302,37 @@ function loadState(username){
   const raw = read(STORE.save(username), null);
   const s = Object.assign(freshState(), raw || {});
   if (!Array.isArray(s.planes)) s.planes = [];
-  // Drop planes whose rank no longer exists (e.g. after a config change).
   s.planes = s.planes.filter(p => p && PLANE_TIERS[p.tier]);
   s.slots = clamp(s.slots, BALANCE.startingSlots, BALANCE.maxSlots);
+  if (!Array.isArray(s.unlockedSeasons)) s.unlockedSeasons = [1];
+  if (!s.unlockedSeasons.includes(1)) s.unlockedSeasons.push(1);
+  if (!s.activeWallpaper || !SEASON_THEMES.find(t => t.id === s.activeWallpaper)) s.activeWallpaper = 1;
+  if (!s.settings) s.settings = { music: false, vibrate: true, volume: 0.6, muted: false, track: "ocean" };
+  if (typeof s.settings.music !== "boolean") s.settings.music = false;
+  if (typeof s.settings.vibrate !== "boolean") s.settings.vibrate = true;
+  if (typeof s.settings.volume !== "number" || s.settings.volume < 0 || s.settings.volume > 1) s.settings.volume = 0.6;
+  if (typeof s.settings.muted !== "boolean") s.settings.muted = false;
+  if (typeof s.settings.track !== "string" || !SOUND_TRACKS.find(t => t.id === s.settings.track)) s.settings.track = "ocean";
+  if (typeof s.milestone1B !== "boolean") s.milestone1B = false;
+  if (typeof s.lifetimeGems !== "number" || s.lifetimeGems < s.gems) s.lifetimeGems = s.gems;
+  if (!Array.isArray(s.fruitsSeen)) s.fruitsSeen = [];
+  if (!Array.isArray(s.questsClaimed)) s.questsClaimed = [];
+  if (typeof s.streak !== "number") s.streak = 0;
+  if (typeof s.lastPlayedDate !== "string") s.lastPlayedDate = null;
+  if (typeof s.bestStreak !== "number" || s.bestStreak < s.streak) s.bestStreak = s.streak;
+  s.planes.forEach(p => {
+    if (PLANE_TIERS[p.tier] && PLANE_TIERS[p.tier].kind === "fruit"){
+      noteFruitDiscovered(s, p.tier);
+    }
+  });
+  const fruitStartIdx = PLANE_TIERS.findIndex(t => t.kind === "fruit");
+  if (fruitStartIdx !== -1){
+    for (let i = fruitStartIdx; i <= (s.highestTierReached || 0) && i < PLANE_TIERS.length; i++){
+      if (!s.fruitsSeen.includes(i)) s.fruitsSeen.push(i);
+    }
+  }
   if (s.season !== GAME_SEASON.id){
-    s.season = GAME_SEASON.id;       // carry the fleet into the new season
+    s.season = GAME_SEASON.id;
     s.seasonJustChanged = true;
   }
   return s;
@@ -547,9 +1341,6 @@ function saveState(){
   if (user && state) write(STORE.save(user), state);
 }
 
-/* ==================================================================
-   4. DERIVED VALUES
-   ================================================================== */
 const speedMult  = s => 1 + s.speedLevel * BALANCE.speedStepPct;
 const boostMult  = s => 1 + s.boostLevel * BALANCE.boostStepPct;
 const perClick   = () => BALANCE.gemsPerClick * GAME_SEASON.clickBonus;
@@ -564,12 +1355,12 @@ function addPlane(s, tier){
   let slot = 0; while (used.has(slot)) slot++;
   const p = { id: s.nextPlaneId++, tier, slot, fresh: true };
   s.planes.push(p);
+  if (tier > (s.highestTierReached || 0)) s.highestTierReached = tier;
+  const reward = noteFruitDiscovered(s, tier);
+  if (reward > 0 && s === state) toast(PLANE_TIERS[tier].name + " discovered! +" + money(reward) + " bonus gems.");
   return p;
 }
 
-/* ==================================================================
-   5. HELPERS
-   ================================================================== */
 const $ = id => document.getElementById(id);
 const rnd = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
@@ -580,7 +1371,7 @@ function money(n){
   const units = ["k","M","B","T","Qa"];
   let i = -1, v = n;
   while (v >= 1000 && i < units.length - 1){ v /= 1000; i++; }
-  return (v < 10 ? v.toFixed(1) : Math.floor(v)) + units[i];
+  return v.toFixed(2) + units[i];
 }
 let toastTimer;
 function toast(msg){
@@ -592,12 +1383,24 @@ function toast(msg){
 function openModal(el){ el.hidden = false; }
 function closeModal(el){ el.hidden = true; }
 const anyModalOpen = () =>
-  ["authModal","quizModal","shopModal","helpModal"].some(id => !$(id).hidden);
+  ["authModal","quizModal","shopModal","helpModal","leaderboardModal","confirmModal","settingsModal","congratsModal"].some(id => !$(id).hidden);
 
-/* ==================================================================
-   6. AUTH
-   ================================================================== */
 let authMode = "login";
+
+function fillCountrySelect(sel, includePlaceholder){
+  if (sel.dataset.filled) return;
+  if (includePlaceholder){
+    const ph = document.createElement("option");
+    ph.value = ""; ph.textContent = "Not set";
+    sel.appendChild(ph);
+  }
+  COUNTRIES.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+  sel.dataset.filled = "1";
+}
 
 function setAuthMode(mode){
   authMode = mode;
@@ -605,12 +1408,27 @@ function setAuthMode(mode){
   $("tabSignup").setAttribute("aria-selected", mode === "signup");
   $("authGo").textContent = mode === "login" ? "Sign in" : "Create pilot";
   $("authPass").autocomplete = mode === "login" ? "current-password" : "new-password";
+  $("authCountryRow").hidden = mode !== "signup";
+  if (mode === "signup") fillCountrySelect($("authCountry"), false);
   $("authErr").textContent = "";
+}
+
+function saveMyCountry(){
+  const val = $("lbCountrySelect").value;
+  if (!val){ toast("Pick a country first."); return; }
+  const users = read(STORE.users, {});
+  if (!users[user]) return;
+  users[user].country = val;
+  write(STORE.users, users);
+  lastSyncedGems = -1;
+  syncLeaderboard(true).then(renderLeaderboard);
+  toast("Country set to " + val + ".");
 }
 
 function submitAuth(){
   const name = $("authUser").value.trim();
   const pass = $("authPass").value;
+  const country = $("authCountry").value;
   const err = $("authErr");
 
   if (name.length < 2){ err.textContent = "Pilot names need at least 2 characters."; return; }
@@ -621,7 +1439,8 @@ function submitAuth(){
 
   if (authMode === "signup"){
     if (users[key]){ err.textContent = "That pilot name is taken on this browser. Sign in instead."; return; }
-    users[key] = { name: name, pass: scramble(pass), joined: Date.now() };
+    if (!country){ err.textContent = "Pick a country so the leaderboard can place you."; return; }
+    users[key] = { name: name, pass: scramble(pass), country: country, joined: Date.now() };
     if (!write(STORE.users, users)){
       err.textContent = "This browser is blocking storage, so progress cannot be saved.";
       return;
@@ -642,19 +1461,19 @@ function submitAuth(){
 
 function signOut(){
   saveState();
+  stopMusic();
   drop(STORE.session);
   user = null; state = null; picked = null;
   $("shell").hidden = true;
-  ["quizModal","shopModal","helpModal"].forEach(id => closeModal($(id)));
+  document.body.style.background = "";
+  ["quizModal","shopModal","helpModal","leaderboardModal","settingsModal"].forEach(id => closeModal($(id)));
   $("orbit").innerHTML = "";
   setAuthMode("login");
   openModal($("authModal"));
 }
 
-/* ==================================================================
-   7. MATH GATE
-   ================================================================== */
 let quizAnswer = null;
+let quizOnSuccess = null;
 
 function newQuestion(){
   const q = MATH_QUIZ.makers[rnd(0, MATH_QUIZ.makers.length - 1)]();
@@ -665,7 +1484,8 @@ function newQuestion(){
   setTimeout(() => $("quizInput") && $("quizInput").focus(), 30);
 }
 
-function openQuiz(){
+function openQuiz(onSuccess){
+  quizOnSuccess = onSuccess || null;
   newQuestion();
   openModal($("quizModal"));
 }
@@ -676,16 +1496,324 @@ function checkQuiz(){
   if (val === ""){ $("quizErr").textContent = "Type a number first."; return; }
   if (Number(val) === quizAnswer){
     closeModal($("quizModal"));
-    openShop();
+    const fn = quizOnSuccess;
+    quizOnSuccess = null;
+    if (fn) fn();
   } else {
     $("quizErr").textContent = "Not quite. Here is another one.";
     setTimeout(newQuestion, 700);
   }
 }
 
-/* ==================================================================
-   8. SHOP
-   ================================================================== */
+let lbMode = "global";
+
+async function openLeaderboard(){
+  saveState();
+  fillCountrySelect($("lbCountrySelect"), true);
+  const users = read(STORE.users, {});
+  $("lbCountrySelect").value = (users[user] && users[user].country) || "";
+  await syncLeaderboard(true);
+  lbMode = "global";
+  $("lbTabGlobal").setAttribute("aria-selected", "true");
+  $("lbTabCountry").setAttribute("aria-selected", "false");
+  openModal($("leaderboardModal"));
+  renderLeaderboard();
+}
+
+function setLbMode(mode){
+  lbMode = mode;
+  $("lbTabGlobal").setAttribute("aria-selected", mode === "global");
+  $("lbTabCountry").setAttribute("aria-selected", mode === "country");
+  renderLeaderboard();
+}
+
+const SETTINGS_TABS = ["general", "fruits", "quests", "sound", "feedback", "rating"];
+
+const QUESTS = [
+  { gems: 1000,        reward: 10000 },
+  { gems: 10000,       reward: 15000 },
+  { gems: 100000,      reward: 20000 },
+  { gems: 1000000,     reward: 25000 },
+  { gems: 10000000,    reward: 30000 },
+  { gems: 100000000,   reward: 35000 },
+  { gems: 1000000000,  reward: 40000 }
+];
+
+function openSettings(){
+  renderWallpaperGrid();
+  renderFruitsList();
+  renderQuests();
+  syncSoundButtons();
+  setSettingsTab("general");
+  openModal($("settingsModal"));
+  loadRatingPane();
+}
+
+function renderFruitsList(){
+  const wrap = $("fruitsList");
+  wrap.innerHTML = "";
+  PLANE_TIERS.forEach((tier, idx) => {
+    if (tier.kind !== "fruit") return;
+    const unlocked = state.fruitsSeen.includes(idx) || idx <= (state.highestTierReached || 0);
+    const row = document.createElement("div");
+    row.className = "item";
+
+    const h = document.createElement("h3");
+    h.textContent = (unlocked ? "" : "🔒 ") + tier.name;
+
+    const badge = document.createElement("span");
+    badge.className = "btn ghost";
+    badge.style.pointerEvents = "none";
+    badge.textContent = unlocked ? "Unlocked" : "Locked";
+
+    const p = document.createElement("p");
+    p.textContent = unlocked
+      ? "Earns " + money(tier.income) + " gems/sec while it's on your loop."
+      : "Merge your way up the loop to discover this one.";
+
+    row.append(h, badge, p);
+    wrap.appendChild(row);
+  });
+}
+
+function renderQuests(){
+  const wrap = $("questsList");
+  wrap.innerHTML = "";
+  QUESTS.forEach((q, i) => {
+    const reached = state.lifetimeGems >= q.gems;
+    const claimed = state.questsClaimed.includes(i);
+    const row = document.createElement("div");
+    row.className = "item";
+
+    const h = document.createElement("h3");
+    h.textContent = (claimed ? "✅ " : reached ? "🎁 " : "⬜ ") + "Reach " + money(q.gems) + " gems";
+
+    const btn = document.createElement("button");
+    if (claimed){
+      btn.className = "btn ghost";
+      btn.disabled = true;
+      btn.textContent = "Claimed";
+    } else if (reached){
+      btn.className = "btn primary";
+      btn.textContent = "Claim +" + money(q.reward) + " gems";
+      btn.addEventListener("click", () => claimQuest(i));
+    } else {
+      btn.className = "btn ghost";
+      btn.disabled = true;
+      btn.textContent = "Locked";
+    }
+
+    const p = document.createElement("p");
+    p.textContent = claimed
+      ? ("Claimed +" + money(q.reward) + " gems.")
+      : reached
+      ? "Tap Claim to collect your reward."
+      : ("Reward: +" + money(q.reward) + " gems when reached.");
+
+    row.append(h, btn, p);
+    wrap.appendChild(row);
+  });
+}
+
+function setSettingsTab(tab){
+  SETTINGS_TABS.forEach(t => {
+    const cap = t[0].toUpperCase() + t.slice(1);
+    $("setTab" + cap).setAttribute("aria-selected", t === tab);
+    $("setPane" + cap).hidden = t !== tab;
+  });
+  if (tab === "feedback") $("feedbackNote").textContent = "";
+}
+
+function renderWallpaperGrid(){
+  const grid = $("wallpaperGrid");
+  grid.innerHTML = "";
+  SEASON_THEMES.forEach(season => {
+    const owned = state.unlockedSeasons.includes(season.id);
+    const cell = document.createElement("div");
+    cell.className = "wallpaper-swatch" + (owned ? "" : " locked") + (state.activeWallpaper === season.id ? " active" : "");
+
+    const preview = document.createElement("div");
+    preview.className = "swatch-preview";
+    preview.style.background = season.bg;
+
+    const label = document.createElement("div");
+    const shortName = season.name.replace(/^Season \d+ — /, "");
+    label.textContent = owned ? shortName : "🔒 " + shortName;
+
+    cell.append(preview, label);
+
+    if (owned){
+      cell.addEventListener("click", () => {
+        state.activeWallpaper = season.id;
+        applyWallpaper(season.id);
+        $("seasonChip").textContent = season.name;
+        saveState();
+        renderWallpaperGrid();
+        toast(season.name + " equipped.");
+      });
+    }
+    grid.appendChild(cell);
+  });
+}
+
+function fillTrackSelect(){
+  const sel = $("trackSelect");
+  if (sel.dataset.filled) return;
+  SOUND_TRACKS.forEach(t => {
+    const opt = document.createElement("option");
+    opt.value = t.id; opt.textContent = t.name;
+    sel.appendChild(opt);
+  });
+  sel.dataset.filled = "1";
+}
+
+function syncSoundButtons(){
+  $("toggleMusic").textContent = state.settings.music ? "On" : "Off";
+  $("toggleVibrate").textContent = state.settings.vibrate ? "On" : "Off";
+  $("volumeSlider").value = Math.round(state.settings.volume * 100);
+  $("muteBtn").textContent = state.settings.muted ? "Unmute" : "Mute";
+  fillTrackSelect();
+  $("trackSelect").value = state.settings.track;
+  applyMusicVolume();
+}
+
+function onTrackChange(e){
+  state.settings.track = e.target.value;
+  saveState();
+  if (state.settings.music) startMusic();
+}
+
+function onVolumeChange(e){
+  state.settings.volume = Number(e.target.value) / 100;
+  if (state.settings.muted && state.settings.volume > 0) state.settings.muted = false;
+  saveState();
+  syncSoundButtons();
+}
+
+function toggleMute(){
+  state.settings.muted = !state.settings.muted;
+  saveState();
+  syncSoundButtons();
+}
+
+function toggleMusicSetting(){
+  state.settings.music = !state.settings.music;
+  if (state.settings.music) startMusic(); else stopMusic();
+  saveState();
+  syncSoundButtons();
+}
+
+function toggleVibrateSetting(){
+  state.settings.vibrate = !state.settings.vibrate;
+  saveState();
+  syncSoundButtons();
+}
+
+async function renderLeaderboard(){
+  const list = $("lbList");
+  const note = $("lbNote");
+  const yourRank = $("lbYourRank");
+  const myCountry = currentCountry();
+  const askedFor = lbMode;
+
+  list.innerHTML = "<p class='lb-empty'>Loading…</p>";
+  yourRank.textContent = "";
+
+  let full = null;
+  if (dbCap){
+    note.textContent = askedFor === "global"
+      ? "Every pilot who has opened this page, ranked by gems."
+      : "Pilots from " + myCountry + ", ranked by gems.";
+    try {
+      full = askedFor === "global" ? await fetchGlobalFull() : await fetchCountryFull(myCountry);
+    } catch (e){ full = null; }
+  } else {
+    note.textContent = "Global rankings need this page opened via its Claude link. Showing pilots created on this browser instead.";
+    full = localBoardRows();
+    if (askedFor === "country") full = full.filter(r => r.country === myCountry);
+  }
+
+  if (askedFor !== lbMode) return; // a newer tab switch already superseded this render
+
+  paintLbRows(full ? full.slice(0, 100) : null, list);
+  paintYourRank(full, yourRank);
+}
+
+function paintYourRank(full, el){
+  el.innerHTML = "";
+  if (!full) return;
+  const idx = full.findIndex(r => r.id === user);
+  if (idx === -1){
+    el.textContent = "You're not ranked yet — earn some gems!";
+    return;
+  }
+  const me = full[idx];
+  const flag = document.createElement("span");
+  flag.className = "lb-flag";
+  flag.textContent = flagEmoji(me.country);
+
+  const label = document.createElement("span");
+  label.textContent = "Your rank: #" + (idx + 1) + " (" + (me.country || "Unknown") + ")";
+
+  const gems = document.createElement("span");
+  gems.className = "lb-gems";
+  gems.textContent = money(Number(me.gems) || 0);
+
+  const left = document.createElement("span");
+  left.append(flag, label);
+
+  el.append(left, gems);
+}
+
+function paintLbRows(rows, list){
+  list.innerHTML = "";
+  if (!rows || rows.length === 0){
+    const p = document.createElement("p");
+    p.className = "lb-empty";
+    p.textContent = "No pilots yet.";
+    list.appendChild(p);
+    return;
+  }
+  rows.forEach((r, i) => {
+    const row = document.createElement("div");
+    row.className = "lb-row";
+
+    const rank = document.createElement("span");
+    rank.className = "lb-rank";
+    rank.textContent = String(i + 1);
+
+    const name = document.createElement("span");
+    name.className = "lb-name";
+    name.appendChild(document.createTextNode(String(r.name || r.id || "Pilot")));
+
+    if (r.id === user){
+      const you = document.createElement("span");
+      you.className = "you";
+      you.textContent = "YOU";
+      name.appendChild(you);
+    }
+
+    const countryLine = document.createElement("span");
+    countryLine.className = "lb-country";
+    const flag = document.createElement("span");
+    flag.className = "lb-flag";
+    flag.textContent = flagEmoji(r.country);
+    countryLine.appendChild(flag);
+    countryLine.appendChild(document.createTextNode(r.country || "Unknown"));
+
+    const nameCol = document.createElement("span");
+    nameCol.className = "lb-namecol";
+    nameCol.append(name, countryLine);
+
+    const gems = document.createElement("span");
+    gems.className = "lb-gems";
+    gems.textContent = money(Number(r.gems) || 0);
+
+    row.append(rank, nameCol, gems);
+    list.appendChild(row);
+  });
+}
+
 function openShop(){
   $("shopLede").textContent = GAME_SEASON.tagline;
   renderShop();
@@ -719,6 +1847,51 @@ function renderShop(){
     row.append(h, b, p);
     list.appendChild(row);
   });
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Seasons";
+  heading.style.marginTop = "18px";
+  list.appendChild(heading);
+
+  SEASON_THEMES.forEach(season => {
+    const owned = state.unlockedSeasons.includes(season.id);
+    const row = document.createElement("div");
+    row.className = "item seasonal";
+
+    const h = document.createElement("h3");
+    h.textContent = season.name;
+
+    const p = document.createElement("p");
+    p.textContent = owned
+      ? "Unlocked. Equip it from Settings → General."
+      : "Unlocks a new sky wallpaper for your loop.";
+
+    const b = document.createElement("button");
+    if (owned){
+      b.className = "btn ghost";
+      b.disabled = true;
+      b.textContent = "Unlocked";
+    } else {
+      const afford = state.gems >= season.price;
+      b.className = "btn buy" + (afford ? " primary" : "");
+      b.disabled = !afford;
+      b.innerHTML = "<span class='price'>" + money(season.price) + "</span> gems";
+      b.addEventListener("click", () => buySeason(season));
+    }
+
+    row.append(h, b, p);
+    list.appendChild(row);
+  });
+}
+
+function buySeason(season){
+  if (state.gems < season.price){ toast("Not enough gems yet."); return; }
+  state.gems -= season.price;
+  state.unlockedSeasons.push(season.id);
+  saveState();
+  renderShop();
+  paintHud();
+  toast(season.name + " unlocked! Equip it from Settings.");
 }
 
 function buy(item){
@@ -734,15 +1907,19 @@ function buy(item){
   toast(msg);
 }
 
-/* ==================================================================
-   9. TRACK RENDERING
-   ================================================================== */
 const PLANE_SVG = color => `
 <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <path d="M32 4c3 0 5 6 5.4 13.4L58 31.6c1.2.8 1.8 2 1.8 3.3v3.6c0 .9-.9 1.5-1.7 1.2L37.6 33c-.2 5-.7 9.4-1.4 12.6l7.5 5.6c.7.5 1.1 1.3 1.1 2.2v2.2c0 .8-.8 1.4-1.6 1.1L32 53l-11.2 3.7c-.8.3-1.6-.3-1.6-1.1v-2.2c0-.9.4-1.7 1.1-2.2l7.5-5.6c-.7-3.2-1.2-7.6-1.4-12.6L5.9 39.7c-.8.3-1.7-.3-1.7-1.2v-3.6c0-1.3.6-2.5 1.8-3.3l20.6-14.2C27 10 29 4 32 4z"
         fill="${color}"/>
   <path d="M32 4c3 0 5 6 5.4 13.4L58 31.6c1.2.8 1.8 2 1.8 3.3v3.6c0 .9-.9 1.5-1.7 1.2L37.6 33c-.2 5-.7 9.4-1.4 12.6l7.5 5.6c.7.5 1.1 1.3 1.1 2.2v2.2c0 .8-.8 1.4-1.6 1.1L32 53z"
         fill="rgba(0,0,0,.18)"/>
+</svg>`;
+
+const FRUIT_SVG = color => `
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <circle cx="32" cy="37" r="21" fill="${color}"/>
+  <ellipse cx="24" cy="30" rx="7" ry="4" fill="rgba(255,255,255,.35)"/>
+  <path d="M32 16c0-7 7-11 12-11-2 7-5 11-12 11z" fill="#2e7d32"/>
 </svg>`;
 
 function ringRadii(){
@@ -784,7 +1961,7 @@ function renderFleet(){
       + ", earns " + tier.income + " gems a second");
     el.style.setProperty("--scale", tier.scale);
     if (el.dataset.painted !== String(p.tier)){
-      el.innerHTML = PLANE_SVG(tier.color)
+      el.innerHTML = (tier.kind === "fruit" ? FRUIT_SVG : PLANE_SVG)(tier.color)
         + '<span class="tier-pip">' + (p.tier + 1) + "</span>";
       el.dataset.painted = String(p.tier);
     }
@@ -805,7 +1982,7 @@ function positionFleet(){
     const ring = Math.floor(p.slot / perRing) % 2;
     const r = ring === 0 ? outer : inner;
     const idx = p.slot % perRing;
-    const dir = ring === 0 ? 1 : -1;                      // inner ring flies the other way
+    const dir = ring === 0 ? 1 : -1;
     const ang = orbitPhase * dir + (idx / perRing) * Math.PI * 2;
     const scale = PLANE_TIERS[p.tier].scale;
     el.style.transform =
@@ -814,9 +1991,6 @@ function positionFleet(){
   });
 }
 
-/* ==================================================================
-   10. MERGING
-   ================================================================== */
 function tapPlane(id){
   const plane = state.planes.find(p => p.id === id);
   if (!plane) return;
@@ -843,26 +2017,32 @@ function tapPlane(id){
     return;
   }
 
-  // Merge: the tapped plane levels up, the selected one is scrapped.
   plane.tier += 1;
   state.planes = state.planes.filter(p => p.id !== other.id);
   state.merges++;
+  if (plane.tier > (state.highestTierReached || 0)) state.highestTierReached = plane.tier;
+  const fruitReward = noteFruitDiscovered(state, plane.tier);
   picked = null;
 
   const el = $("orbit").querySelector('[data-id="' + plane.id + '"]');
   if (el){ el.dataset.painted = ""; el.classList.add("is-new"); setTimeout(() => el.classList.remove("is-new"), 500); }
 
   renderFleet(); paintHud(); saveState();
-  toast("Merged into a " + PLANE_TIERS[plane.tier].name + ".");
+  vibrateOnMerge();
+  checkMilestones();
+  if (fruitReward > 0){
+    toast(PLANE_TIERS[plane.tier].name + " discovered! +" + money(fruitReward) + " bonus gems.");
+  } else {
+    toast("Merged into a " + PLANE_TIERS[plane.tier].name + ".");
+  }
 }
 
-/* ==================================================================
-   11. CLICKER
-   ================================================================== */
 function tapSky(ev){
   if (anyModalOpen()) return;
   state.gems += perClick();
   state.taps++;
+  if (state.gems > state.lifetimeGems) state.lifetimeGems = state.gems;
+  checkMilestones();
   if (picked !== null){ picked = null; renderFleet(); }
 
   const s = document.createElement("span");
@@ -878,9 +2058,6 @@ function tapSky(ev){
   paintHud();
 }
 
-/* ==================================================================
-   12. HUD + LOOPS
-   ================================================================== */
 function paintHud(){
   $("gemCount").textContent = money(state.gems);
   const rate = income(state);
@@ -895,7 +2072,12 @@ function paintHud(){
 
 function tickIncome(){
   const gained = income(state) * (BALANCE.tickMs / 1000);
-  if (gained > 0){ state.gems += gained; paintHud(); }
+  if (gained > 0){
+    state.gems += gained;
+    if (state.gems > state.lifetimeGems) state.lifetimeGems = state.gems;
+    paintHud();
+    checkMilestones();
+  }
 }
 
 function frame(t){
@@ -909,21 +2091,51 @@ function frame(t){
   requestAnimationFrame(frame);
 }
 
-/* ==================================================================
-   13. BOOT
-   ================================================================== */
+function localDateString(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return y + "-" + m + "-" + day;
+}
+
+function parseLocalDate(str){
+  const parts = str.split("-").map(Number);
+  return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function updateStreak(){
+  const today = localDateString(new Date());
+  if (state.lastPlayedDate !== today){
+    if (state.lastPlayedDate){
+      const diffDays = Math.round((parseLocalDate(today) - parseLocalDate(state.lastPlayedDate)) / 86400000);
+      state.streak = diffDays === 1 ? (state.streak || 0) + 1 : 1;
+    } else {
+      state.streak = 1;
+    }
+    state.lastPlayedDate = today;
+  }
+  if (!state.bestStreak || state.streak > state.bestStreak) state.bestStreak = state.streak;
+  $("streakChip").textContent = "🔥 " + state.streak + "-day streak";
+  $("bestStreakChip").textContent = "🏆 Best: " + state.bestStreak + "-day streak";
+}
+
 function startGame(){
   $("shell").hidden = false;
-  $("seasonChip").textContent = GAME_SEASON.name;
+  $("seasonChip").textContent = (SEASON_THEMES.find(s => s.id === state.activeWallpaper) || SEASON_THEMES[0]).name;
+  updateStreak();
+  applyWallpaper(state.activeWallpaper);
+  if (state.settings.music) startMusic();
   drawRings();
   renderFleet();
   paintHud();
+  checkMilestones();
 
   if (state.seasonJustChanged){
     delete state.seasonJustChanged;
     toast(GAME_SEASON.name + " has begun. Your fleet carried over.");
   }
   saveState();
+  syncLeaderboard(true);
 }
 
 function wire(){
@@ -933,10 +2145,36 @@ function wire(){
   ["authUser","authPass"].forEach(id =>
     $(id).addEventListener("keydown", e => { if (e.key === "Enter") submitAuth(); }));
   $("logoutBtn").addEventListener("click", signOut);
+  $("leaderboardBtn").addEventListener("click", e => { e.stopPropagation(); openLeaderboard(); });
+  $("lbClose").addEventListener("click", () => closeModal($("leaderboardModal")));
+  $("lbTabGlobal").addEventListener("click", () => setLbMode("global"));
+  $("lbTabCountry").addEventListener("click", () => setLbMode("country"));
+  $("lbCountrySave").addEventListener("click", saveMyCountry);
+  $("resetPlanesBtn").addEventListener("click", resetPlanesOnly);
+  $("resetGemsBtn").addEventListener("click", resetGemsOnly);
+  $("resetAllBtn").addEventListener("click", resetProgress);
+  $("confirmYes").addEventListener("click", () => settleConfirm(true));
+  $("congratsClose").addEventListener("click", () => closeModal($("congratsModal")));
+  $("confirmNo").addEventListener("click", () => settleConfirm(false));
+
+  $("settingsBtn").addEventListener("click", e => { e.stopPropagation(); openQuiz(openSettings); });
+  $("settingsClose").addEventListener("click", () => closeModal($("settingsModal")));
+  $("setTabGeneral").addEventListener("click", () => setSettingsTab("general"));
+  $("setTabFruits").addEventListener("click", () => setSettingsTab("fruits"));
+  $("setTabQuests").addEventListener("click", () => setSettingsTab("quests"));
+  $("setTabSound").addEventListener("click", () => setSettingsTab("sound"));
+  $("setTabFeedback").addEventListener("click", () => setSettingsTab("feedback"));
+  $("setTabRating").addEventListener("click", () => setSettingsTab("rating"));
+  $("toggleMusic").addEventListener("click", toggleMusicSetting);
+  $("toggleVibrate").addEventListener("click", toggleVibrateSetting);
+  $("volumeSlider").addEventListener("input", onVolumeChange);
+  $("trackSelect").addEventListener("change", onTrackChange);
+  $("muteBtn").addEventListener("click", toggleMute);
+  $("feedbackSend").addEventListener("click", sendFeedback);
 
   $("airspace").addEventListener("click", tapSky);
 
-  $("shopBtn").addEventListener("click", e => { e.stopPropagation(); openQuiz(); });
+  $("shopBtn").addEventListener("click", e => { e.stopPropagation(); openQuiz(openShop); });
   $("helpBtn").addEventListener("click", e => { e.stopPropagation(); openModal($("helpModal")); });
   $("helpClose").addEventListener("click", () => closeModal($("helpModal")));
 
@@ -949,20 +2187,30 @@ function wire(){
 
   document.addEventListener("keydown", e => {
     if (e.key !== "Escape") return;
-    ["quizModal","shopModal","helpModal"].forEach(id => closeModal($(id)));
+    if (!$("confirmModal").hidden){ settleConfirm(false); return; }
+    if (!$("congratsModal").hidden){ closeModal($("congratsModal")); return; }
+    ["quizModal","shopModal","helpModal","leaderboardModal","settingsModal"].forEach(id => closeModal($(id)));
   });
 
   window.addEventListener("resize", () => { drawRings(); positionFleet(); });
   window.addEventListener("beforeunload", saveState);
-  document.addEventListener("visibilitychange", () => { if (document.hidden) saveState(); });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden){
+      saveState();
+      if (audioCtx && audioCtx.state === "running") audioCtx.suspend();
+    } else if (audioCtx && state && state.settings && state.settings.music && audioCtx.state === "suspended"){
+      audioCtx.resume();
+    }
+  });
 
   setInterval(() => { if (state) tickIncome(); }, BALANCE.tickMs);
-  setInterval(saveState, BALANCE.autosaveMs);
+  setInterval(() => { saveState(); syncLeaderboard(false); }, BALANCE.autosaveMs);
   requestAnimationFrame(frame);
 }
 
 (function boot(){
   wire();
+  initDb().then(() => { if (user) syncLeaderboard(true); });
   setAuthMode("login");
   const session = read(STORE.session, null);
   const users = read(STORE.users, {});
