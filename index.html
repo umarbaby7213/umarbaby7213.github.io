@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3286738831360204"
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3286738831360204"
      crossorigin="anonymous"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -337,14 +337,21 @@ textarea:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color
 </style>
 </head>
 <body>
-<!-- skyloop-banner -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3286738831360204"
-     data-ad-slot="8646539481"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
+<body>
+  <!-- Ad Banner Top -->
+  <div style="text-align: center; margin: 10px 0;">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3286738831360204"
+         data-ad-slot="8646539481"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
+  <!-- Your Game Code Starts Here -->
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 <div id="shell" hidden>
@@ -494,6 +501,7 @@ textarea:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color
       <div class="row" style="flex-direction:column; align-items:stretch; gap:8px;">
         <button class="btn ghost" id="resetPlanesBtn">💀 Reset Planes</button>
         <button class="btn ghost" id="resetGemsBtn">💀 Reset Gems</button>
+        <button class="btn ghost" id="resetStreakBtn">💀 Reset Streak</button>
         <button class="btn ghost" id="resetAllBtn">☠️ Reset All Progress</button>
       </div>
     </div>
@@ -896,6 +904,22 @@ async function resetPlanesOnly(){
   toast("Your fleet has been cleared.");
 }
 
+async function resetStreakOnly(){
+  closeModal($("settingsModal"));
+  const sure = await askConfirm(
+    "Reset your streak?",
+    "Your current streak and highest streak will both drop to zero. Your gems and planes stay untouched. This can't be undone."
+  );
+  if (!sure) return;
+
+  state.streak = 0;
+  state.bestStreak = 0;
+  state.lastPlayedDate = null;
+  saveState();
+  updateStreak();
+  toast("Your streak has been reset.");
+}
+
 async function resetGemsOnly(){
   closeModal($("settingsModal"));
   const sure = await askConfirm(
@@ -1129,6 +1153,7 @@ function vibrateOnMerge(){
 }
 
 const MILESTONE_GEMS = 1000000000; // 1,000,000,000 gems
+const STREAK_RESET_VERSION = 1; // bump this again if streaks ever need another clean reset
 
 function checkMilestones(){
   if (!state || state.milestone1B || state.gems < MILESTONE_GEMS) return;
@@ -1293,7 +1318,7 @@ function freshState(){
     streak: 0,
     lastPlayedDate: null,
     bestStreak: 0,
-    settings: { music: true, vibrate: true, volume: 0.6, muted: false, track: "ocean" },
+    settings: { music: false, vibrate: true, volume: 0.6, muted: false, track: "ocean" },
     createdAt: Date.now()
   };
 }
@@ -1320,6 +1345,12 @@ function loadState(username){
   if (typeof s.streak !== "number") s.streak = 0;
   if (typeof s.lastPlayedDate !== "string") s.lastPlayedDate = null;
   if (typeof s.bestStreak !== "number" || s.bestStreak < s.streak) s.bestStreak = s.streak;
+  if (s.streakResetVersion !== STREAK_RESET_VERSION){
+    s.streak = 0;
+    s.bestStreak = 0;
+    s.lastPlayedDate = null;
+    s.streakResetVersion = STREAK_RESET_VERSION;
+  }
   s.planes.forEach(p => {
     if (PLANE_TIERS[p.tier] && PLANE_TIERS[p.tier].kind === "fruit"){
       noteFruitDiscovered(s, p.tier);
@@ -2043,6 +2074,7 @@ function tapSky(ev){
   state.taps++;
   if (state.gems > state.lifetimeGems) state.lifetimeGems = state.gems;
   checkMilestones();
+  registerStreakClick();
   if (picked !== null){ picked = null; renderFleet(); }
 
   const s = document.createElement("span");
@@ -2103,26 +2135,39 @@ function parseLocalDate(str){
   return new Date(parts[0], parts[1] - 1, parts[2]);
 }
 
-function updateStreak(){
-  const today = localDateString(new Date());
-  if (state.lastPlayedDate !== today){
-    if (state.lastPlayedDate){
-      const diffDays = Math.round((parseLocalDate(today) - parseLocalDate(state.lastPlayedDate)) / 86400000);
-      state.streak = diffDays === 1 ? (state.streak || 0) + 1 : 1;
-    } else {
-      state.streak = 1;
-    }
-    state.lastPlayedDate = today;
-  }
-  if (!state.bestStreak || state.streak > state.bestStreak) state.bestStreak = state.streak;
+function updateStreakDisplay(){
   $("streakChip").textContent = "🔥 " + state.streak + "-day streak";
   $("bestStreakChip").textContent = "🏆 Best: " + state.bestStreak + "-day streak";
+}
+
+function checkStreakBreak(){
+  const today = localDateString(new Date());
+  if (state.lastPlayedDate && state.lastPlayedDate !== today){
+    const diffDays = Math.round((parseLocalDate(today) - parseLocalDate(state.lastPlayedDate)) / 86400000);
+    if (diffDays > 1) state.streak = 0; // a day was missed — break it now, even before any tap today
+  }
+  updateStreakDisplay();
+}
+
+function registerStreakClick(){
+  const today = localDateString(new Date());
+  if (state.lastPlayedDate === today) return; // already counted today
+  if (state.lastPlayedDate){
+    const diffDays = Math.round((parseLocalDate(today) - parseLocalDate(state.lastPlayedDate)) / 86400000);
+    state.streak = diffDays === 1 ? (state.streak || 0) + 1 : 1;
+  } else {
+    state.streak = 1;
+  }
+  state.lastPlayedDate = today;
+  if (!state.bestStreak || state.streak > state.bestStreak) state.bestStreak = state.streak;
+  updateStreakDisplay();
+  saveState();
 }
 
 function startGame(){
   $("shell").hidden = false;
   $("seasonChip").textContent = (SEASON_THEMES.find(s => s.id === state.activeWallpaper) || SEASON_THEMES[0]).name;
-  updateStreak();
+  checkStreakBreak();
   applyWallpaper(state.activeWallpaper);
   if (state.settings.music) startMusic();
   drawRings();
@@ -2151,6 +2196,7 @@ function wire(){
   $("lbTabCountry").addEventListener("click", () => setLbMode("country"));
   $("lbCountrySave").addEventListener("click", saveMyCountry);
   $("resetPlanesBtn").addEventListener("click", resetPlanesOnly);
+  $("resetStreakBtn").addEventListener("click", resetStreakOnly);
   $("resetGemsBtn").addEventListener("click", resetGemsOnly);
   $("resetAllBtn").addEventListener("click", resetProgress);
   $("confirmYes").addEventListener("click", () => settleConfirm(true));
