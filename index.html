@@ -337,17 +337,18 @@ textarea:focus{ outline:2px solid var(--horizon); outline-offset:0; border-color
 </style>
 </head>
 <body>
-<body>
-<!-- skyloop-banner -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3286738831360204"
-     data-ad-slot="8646539481"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+<!-- Ad Banner Top -->
+  <div style="text-align: center; margin: 10px 0;">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-3286738831360204"
+         data-ad-slot="8646539481"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
 <div id="shell" hidden>
   <header>
     <div class="season-col">
@@ -875,6 +876,7 @@ async function resetProgress(){
   saveState();
   renderFleet();
   paintHud();
+  updateStreakDisplay();
   lastSyncedGems = -1;
   await syncLeaderboard(true);
   renderLeaderboard();
@@ -910,7 +912,7 @@ async function resetStreakOnly(){
   state.bestStreak = 0;
   state.lastPlayedDate = null;
   saveState();
-  updateStreak();
+  updateStreakDisplay();
   toast("Your streak has been reset.");
 }
 
@@ -2265,6 +2267,24 @@ function wire(){
     setTimeout(() => $("authUser").focus(), 60);
   }
 })();
+</script>
+  <script>
+  // Disable right-click menu
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  // Disable Ctrl+U, F12, and DevTools shortcuts
+  document.addEventListener('keydown', function(e) {
+    if (
+      e.key === 'F12' || 
+      (e.ctrlKey && e.key === 'u') || 
+      (e.ctrlKey && e.key === 'U') ||
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))
+    ) {
+      e.preventDefault();
+    }
+  });
 </script>
 </body>
 </html>
